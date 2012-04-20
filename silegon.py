@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #coding=utf-8
-from __future__ import with_statement
 import MySQLdb
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort,\
@@ -12,6 +11,7 @@ DATABASE_USERNAME= 'root'
 DATABASE_PASSWORD = 'root'
 DATABASE_DB = 'silegon'
 DEBUG = True
+SECRET_KEY = 'DEVELOPMENT KEY'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
@@ -44,10 +44,31 @@ def teardown_request(exception):
         g.db.close()
 
 @app.route('/')
-def show_tags():
+def show_index():
     g.db.execute('select id_tag, slug, name from tag;')
     tags = [dict(id_tag=row[0], slug=row[1], name=row[2]) for row in g.db.fetchall()]
     return render_template('index.html', tags=tags)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('show_index'))
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('show_index'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

@@ -30,13 +30,21 @@ div.container {
     text-align:left;
 }
 #header {
-    margin-top:30px;
-    margin-bottom:32px;
+    padding:30px 0;
     position:relative;
     z-index:99;
     overflow:hidden;
 }
-#header-logo {
+#header-top-nav {
+    position:absolute;
+    top:0;
+    right:0;
+}
+#header-flash {
+    position:absolute;
+    top:0;
+}
+#header-logo a{
     float:left;
     margin:0;
     padding-left:10px;

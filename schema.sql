@@ -1,7 +1,8 @@
 CREATE  TABLE IF NOT EXISTS `silegon`.`tag` (
       `id_tag` INT NOT NULL AUTO_INCREMENT ,
-      `name` VARCHAR(20) NOT NULL ,
       `slug` VARCHAR(20) NOT NULL ,
+      `name` VARCHAR(20) NOT NULL ,
+      `count` INT DEFAULT 1,
       PRIMARY KEY (`id_tag`) ,
       UNIQUE INDEX `name_UNIQUE` (`name` ASC) ,
       UNIQUE INDEX `slug_UNIQUE` (`slug` ASC) 
