@@ -1,6 +1,6 @@
 CREATE  TABLE IF NOT EXISTS silegon.tag (
       id_tag INT NOT NULL AUTO_INCREMENT ,
-      slug VARCHAR(20) NOT NULL ,
+      slug VARCHAR(20) NULL ,
       name VARCHAR(20) NOT NULL ,
       count INT DEFAULT 1,
       PRIMARY KEY (id_tag) ,
@@ -10,7 +10,7 @@ CREATE  TABLE IF NOT EXISTS silegon.tag (
 
 CREATE  TABLE IF NOT EXISTS silegon.post (
       id_post INT NOT NULL AUTO_INCREMENT ,
-      title VARCHAR(45) NOT NULL ,
+      title VARCHAR(45) NULL ,
       slug VARCHAR(45) NOT NULL ,
       content TEXT NULL ,
       content_html TEXT NULL ,
@@ -25,6 +25,6 @@ CREATE  TABLE IF NOT EXISTS silegon.post (
 CREATE  TABLE IF NOT EXISTS silegon.tag_post (
       id_tag INT NOT NULL ,
       id_post INT NOT NULL ,
-      UNIQUE INDEX id_tag_UNIQUE (id_tag ASC) ,
-      UNIQUE INDEX id_post_UNIQUE (id_post ASC) 
+      INDEX id_tag_index (id_tag ASC) ,
+      INDEX id_post_index (id_post ASC) 
 );

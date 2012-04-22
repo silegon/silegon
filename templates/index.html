@@ -12,7 +12,9 @@
             </span>
             <div class="article-meta-tags">
                 标签:
-                <span class="article-meta-tag"><a href="#" class="article-meta-tag-link">TEST</a></span>
+                {% for tag in article.tag %}
+                <span class="article-meta-tag"><a href="{{tag.id_tag}}" class="article-meta-tag-link">{{tag.name}}</a></span>
+                {% endfor %}
             </div>
         </div>
         <div class="article-content">

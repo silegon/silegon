@@ -49,9 +49,17 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_index():
-    g.db.execute("select title, publish_date, content_html from post where content_status='P';")
-    context = [dict(title=row[0], publish_date=row[1], content_html=row[2])\
-               for row in g.db.fetchall()]
+    g.db.execute("select id_post, title, publish_date, content_html from \
+                 post where content_status='P';")
+    context = [dict(id_post=row[0], title=row[1], publish_date=row[2], 
+                    content_html=row[3]) for row in g.db.fetchall()]
+    for article in context:
+        id_post = article['id_post']
+        g.db.execute("select tag.id_tag, slug, name, count from tag, tag_post where \
+                     tag.id_tag=tag_post.id_tag and tag_post.id_post=%s;"%(id_post))
+        article['tag'] = [dict(id_tag=row[0], slug=row[1], name=row[2], 
+                        count=row[3])for row in g.db.fetchall()]
+    print context
     return render_template('index.html',c=context)
 
 content_format_dict = {
@@ -85,11 +93,26 @@ def new_article():
             abort(401)
         status = content_status_dict[_status]
         publish_date = datetime.date.today()
-        g.db.execute("insert into post (title, slug, content, content_html,\
+        if title and content_html:
+            g.db.execute("insert into post (title, slug, content, content_html,\
                      content_format, content_status, publish_date) values \
                      ('%s','%s','%s','%s','%s','%s','%s')"%\
                     (title, slug, content, content_html,\
                      format, status, publish_date)) 
+            g.db.execute("select last_insert_id();")
+            id_post = g.db.fetchone()[0]
+            #######for tags ######
+            _tag = f.get('tag', None)
+            if _tag:
+                tags = _tag.split()
+                for tag_name in tags:
+                    g.db.execute("insert into tag set name='%s' on duplicate key\
+                                 update count=count+1;"%(tag_name))
+                    g.db.execute("select id_tag from tag where name='%s';"%(tag_name))
+                    id_tag = g.db.fetchone()[0]
+                    g.db.execute("insert into tag_post(id_tag, id_post) values \
+                                 (%s, %s);"%(id_tag, id_post))
+
     context = {
         'format':'R',
         'status':'P',
