@@ -1,50 +1,24 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="content">
+    {% for article in c %}
     <div class="article">
         <div class="article-title">
-            <a class="article-title-link&quot;" href="#">新年第一篇</a>
+            <a class="article-title-link" href="#">{{ article.title }}</a>
         </div>
         <div class="article-meta">
-            <span id="article-meta-category">
-                分类：<a href="#" class="article-meta-category-link">日记</a>
-            </span>
             <span class="article-meta-date">
-                日期：<a href="#" class="article-meta-date-link">2012-01-02</a>
+                日期：<a href="#" class="article-meta-date-link">{{ article.publish_date }}</a>
             </span>
             <div class="article-meta-tags">
                 标签:
-                <span class="article-meta-tag"><a href="#" class="article-meta-tag-link">新年</a></span>
-                <span class="article-meta-tag"><a href="#" class="article-meta-tag-link">心情</a></span>
+                <span class="article-meta-tag"><a href="#" class="article-meta-tag-link">TEST</a></span>
             </div>
         </div>
         <div class="article-content">
-            id:1; slug:east; name:东
-            id:2; slug:south; name:南
+            {{ article.content_html|safe }}
         </div>
     </div>
-    <div class="article">
-        <div class="article-title">
-            <a class="article-title-link&quot;" href="#">新年第一篇</a>
-        </div>
-        <div class="article-meta">
-            <span id="article-meta-category">
-                分类：<a href="#" class="article-meta-category-link">日记</a>
-            </span>
-            <span class="article-meta-date">
-                日期：<a href="#" class="article-meta-date-link">2012-01-02</a>
-            </span>
-            <div class="article-meta-tags">
-                标签:
-                <span class="article-meta-tag"><a href="#" class="article-meta-tag-link">新年</a></span>
-                <span class="article-meta-tag"><a href="#" class="article-meta-tag-link">心情</a></span>
-            </div>
-        </div>
-        <div class="article-content">
-            <p>盼啊盼啊的，终于2012年了。</p>
-            <p>2011再一次结束，我前面还在纠结呢，要不要写一个2011年终总结。但貌似一不小心就2012年了，哈哈。</p>
-            <p>1号这一天是在睡梦中度过的，直到下午6点才起床。</p>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock %}
