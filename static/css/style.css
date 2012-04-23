@@ -160,3 +160,15 @@ div.container {
     border-top: 1px dashed #c2c2c2;
     border-bottom: 1px dashed #c2c2c2;
 }
+/* tag_ref_post */
+.post-list {
+    list-style:none;
+    position:relative;
+}
+.post-list-item a{
+    font-size:1.2em;
+}
+.post-list-item-date {
+    position:absolute;
+    right:10px;
+}

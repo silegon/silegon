@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="content">
-    {% for post in c %}
     <div class="post">
         <div class="post-title">
             <a class="post-title-link" href="{{ url_for('show_post', post_slug=post.slug)}}">{{ post.title }}</a>
@@ -21,7 +20,6 @@
             {{ post.content_html|safe }}
         </div>
     </div>
-    {% endfor %}
 </div>
 {% endblock %}
 {% block tags %}

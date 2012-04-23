@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="content">
+    <div class="post">
+        <div class="post-title">
+            <a class="post-title-link" href="{{ url_for('tag_ref_post',tag_slug=tag.slug)}}">{{tag.name}}</a>
+        </div>
+        <div class="post-meta">
+            <span class="post-meta-count">
+                <!--
+                <span class="post-meta-count-item">公开：3</span>
+                <span class="post-meta-count-item">草稿：1</span>
+                <span class="post-meta-count-item">隐藏：1</span>
+                -->
+                <span class="post-meta-count-item">总数：{{tag.count}}</span>
+            </span>
+        </div>
+            <div class="post-content">
+                <ul class="post-list">
+                    {% for post in c %}
+                    <li class="post-list-item">
+                    <a href="{{post.slug}}" class="post-list-item-title">{{post.title}}</a><span class="post-list-item-date">{{post.publish_date}}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+    </div>
+</div>
+{% endblock %}
+{% block tags %}
+            <div class="sidebar-box">
+                <div class="sidebar-box-title">标签</div>
+                {% for tag in all_tags %}
+                <a href='{{ tag.slug }}' class='tag-link' title='{{tag.count}}个话题' style='font-size:{{tag.size}}pt;'>{{tag.name}}</a>
+                {% endfor %}
+            </div>
+{% endblock %}
