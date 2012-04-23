@@ -133,8 +133,8 @@ div.container {
     cursor:pointer;
 }
 
-/* article */
-.article{
+/* post */
+.post{
     margin-bottom:20px;
     padding:20px;
     box-shadow:0 0 5px rgba(0, 0, 0, 0.2);
@@ -142,16 +142,16 @@ div.container {
     border-top:#04BFBF 1px solid;
     zoom: 1;
 }
-.article-title {
+.post-title {
     height:32px;
     line-height:32px;
 }
-.article-title a {
+.post-title a {
     font-size:1.2em;
     color:#588F27;
 }
     
-.article-meta {
+.post-meta {
     font-size: 12px;
     color:#999;
     padding: 7px 0px;

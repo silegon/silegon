@@ -48,13 +48,13 @@
             {% endblock %}
         </div>
         <div id="sidebar">
+            <!--
             <div class="sidebar-box">
                 <form method="get" id="searchbar" action="#">
                     <input type="text" size="16" name="s" value="Search" id="search"/>
                     <input type="submit" id="searchsubmit" value="" />
                 </form>
             </div>
-            <!--
             <div class="sidebar-box">
                 <div class="sidebar-box-title">分类条目</div>
                 <ul>
@@ -67,6 +67,7 @@
                 </ul>
             </div>
             -->
+            {% block tags %}
             <div class="sidebar-box">
                 <div class="sidebar-box-title">标签</div>
                     <a href='#' class='tag-link-27' title='1 个话题' style='font-size: 8pt;'>人体</a>
@@ -75,6 +76,8 @@
                     <a href='#' class='tag-link-31' title='1 个话题' style='font-size: 8pt;'>作文</a>
                     <a href='#' class='tag-link-146' title='3 个话题' style='font-size: 12.5161290323pt;'>蔷薇花开的夏天</a>
             </div>
+            {% endblock %}
+            <!--
             <div class="sidebar-box">
                 <div class="sidebar-box-title">链接</div>
                 <ul class='xoxo blogroll'>
@@ -85,6 +88,7 @@
 
                 </ul>
             </div>
+            -->
         </div> 
         <!--
         <div id="footer">

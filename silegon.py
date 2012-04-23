@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 import MySQLdb
+import math
 import datetime
 import markdown
 from docutils.core import publish_parts
@@ -23,6 +24,51 @@ PASSWORD = 'default'
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+
+content_format_dict = {
+    'raw':'R',
+    'rst':'S',
+    'md':'M',
+}
+content_status_dict = {
+    'publish':'P',
+    'draft':'D',
+    'hide':'H',
+}
+def all_tags():
+    g.db.execute("select id_tag, slug, name, count from tag;")
+    tags = [dict(id_tag=row[0], slug=row[1], name=row[2], 
+                        count=row[3])for row in g.db.fetchall()]
+    for tag in tags:
+        tag['size'] = math.sqrt(tag['count']/3+1)*8
+    return tags
+
+def add_post_tag(tag_name, id_post):
+    g.db.execute("insert into tag set name='%s' on duplicate key\
+                 update count=count+1;"%(tag_name))
+    g.db.execute("select id_tag from tag where name='%s';"%(tag_name))
+    id_tag = g.db.fetchone()[0]
+    g.db.execute("insert into tag_post(id_tag, id_post) values \
+                 (%s, %s);"%(id_tag, id_post))
+
+def remove_post_tag(tag_name, id_post):
+    g.db.execute("select id_tag from tag where name='%s';"%(tag_name))
+    id_tag = g.db.fetchone()[0]
+    g.db.execute("delete from tag_post where id_post=%s and id_tag=%s;"%(id_post, id_tag))
+    g.db.execute("select count from tag where id_tag=%s"%(id_tag))
+    tag_count = g.db.fetchone()[0]
+    if tag_count==0:
+        g.db.execute("delete from tag where id_tag=%s"%(id_tag))
+    else:
+        g.db.execute("update tag set count=count-1 where id_tag=%s;"%(id_tag)) 
+
+def get_post_tags(id_post):
+    g.db.execute("select tag.id_tag, slug, name, count from tag, tag_post where \
+                 tag_post.id_post=%s and tag.id_tag=tag_post.id_tag; "%(id_post))
+    post_tags = [dict(id_tag=row[0], slug=row[1], name=row[2], 
+                    count=row[3])for row in g.db.fetchall()]
+    return post_tags
+
 
 def connect_db():
     """Returns a new connection to the database."""
@@ -53,27 +99,12 @@ def show_index():
                  post where content_status='P';")
     context = [dict(id_post=row[0], title=row[1], publish_date=row[2], 
                     content_html=row[3]) for row in g.db.fetchall()]
-    for article in context:
-        id_post = article['id_post']
-        g.db.execute("select tag.id_tag, slug, name, count from tag, tag_post where \
-                     tag.id_tag=tag_post.id_tag and tag_post.id_post=%s;"%(id_post))
-        article['tag'] = [dict(id_tag=row[0], slug=row[1], name=row[2], 
-                        count=row[3])for row in g.db.fetchall()]
-    print context
-    return render_template('index.html',c=context)
+    for post in context:
+        post['tag'] = get_post_tags(post['id_post'])
+    return render_template('index.html', c=context, all_tags=all_tags())
 
-content_format_dict = {
-    'raw':'R',
-    'rst':'S',
-    'md':'M',
-}
-content_status_dict = {
-    'publish':'P',
-    'draft':'D',
-    'hide':'H',
-}
-@app.route('/new_article', methods=['GET', 'POST'])
-def new_article():
+@app.route('/new_post', methods=['GET', 'POST'])
+def new_post():
     error = None
     if request.method == 'POST':
         f = request.form
@@ -106,26 +137,20 @@ def new_article():
             if _tag:
                 tags = _tag.split()
                 for tag_name in tags:
-                    g.db.execute("insert into tag set name='%s' on duplicate key\
-                                 update count=count+1;"%(tag_name))
-                    g.db.execute("select id_tag from tag where name='%s';"%(tag_name))
-                    id_tag = g.db.fetchone()[0]
-                    g.db.execute("insert into tag_post(id_tag, id_post) values \
-                                 (%s, %s);"%(id_tag, id_post))
-
+                    add_tag(tag_name, id_post)
     context = {
         'format':'R',
         'status':'P',
     }
-    return render_template('article_form.html', c=context, error=error)
+    return render_template('post_form.html', c=context, error=error)
 
 
-#@app.route('/edit_article', methods=['GET', 'POST'])
-#def edit_article():
+#@app.route('/edit_post', methods=['GET', 'POST'])
+#def edit_post():
 #    error = None
 #    if request.method == 'POST':
 #        pass
-#    return render_template('article_form.html', error=error)
+#    return render_template('post_form.html', error=error)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

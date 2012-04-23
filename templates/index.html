@@ -1,26 +1,34 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="content">
-    {% for article in c %}
-    <div class="article">
-        <div class="article-title">
-            <a class="article-title-link" href="#">{{ article.title }}</a>
+    {% for post in c %}
+    <div class="post">
+        <div class="post-title">
+            <a class="post-title-link" href="#">{{ post.title }}</a>
         </div>
-        <div class="article-meta">
-            <span class="article-meta-date">
-                日期：<a href="#" class="article-meta-date-link">{{ article.publish_date }}</a>
+        <div class="post-meta">
+            <span class="post-meta-date">
+                日期：<a href="#" class="post-meta-date-link">{{ post.publish_date }}</a>
             </span>
-            <div class="article-meta-tags">
+            <div class="post-meta-tags">
                 标签:
-                {% for tag in article.tag %}
-                <span class="article-meta-tag"><a href="{{tag.id_tag}}" class="article-meta-tag-link">{{tag.name}}</a></span>
+                {% for tag in post.tag %}
+                <span class="post-meta-tag"><a href="{{tag.id_tag}}" class="post-meta-tag-link">{{tag.name}}</a></span>
                 {% endfor %}
             </div>
         </div>
-        <div class="article-content">
-            {{ article.content_html|safe }}
+        <div class="post-content">
+            {{ post.content_html|safe }}
         </div>
     </div>
     {% endfor %}
 </div>
+{% endblock %}
+{% block tags %}
+            <div class="sidebar-box">
+                <div class="sidebar-box-title">标签</div>
+                {% for tag in all_tags %}
+                <a href='{{ tag.slug }}' class='tag-link-27' title='{{tag.count}}个话题' style='font-size:{{tag.size}}pt;'>{{tag.name}}</a>
+                {% endfor %}
+            </div>
 {% endblock %}
