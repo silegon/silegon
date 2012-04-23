@@ -4,30 +4,31 @@
     <div class="post">
         <form action="" method=post>
             <div class="post-title">
-                <label for="title">Title:<input type="text" name="title" id="title" size="79">
+                <label for="title">Title:<input type="text" name="title" id="title" size="79" value="{{ post.title }}"/>
             </div>
             <div class="post-meta">
                 <div class="post-meta-tag">
-                    <label for="tag">Tag:</label><input type="text" name="tag" id="tag" size="40"/>
+                    <label for="tag">Tag:</label><input type="text" name="tag" id="tag" size="40" value="{{ post.tag }}"/>
                 </div>
                 <div class="post-meta-slug">
-                    <label for="slug">Slug:</label><input type="text" name="slug" id="slug" size="40"/>
+                    <label for="slug">Slug:</label><input type="text" name="slug" id="slug" size="40" value="{{ post.slug }}"/>
                 </div>
                 <div class="post-meta-format">
                     <span>Content Format:</span>
-                    <label for="raw">Raw</label><input type="radio" name="format" value="raw" id="raw" {% if c.format=='R' %} checked='check' {% endif %}/>
-                    <label for="rst">reStructuredText</label><input type="radio" name="format" value="rst" id="rst"{% if c.format=='S' %} checked='check' {% endif %}/>
-                    <label for="md">Markdown</label><input type="radio" name="format" value="md" value="md" id="md"{% if c.format=='M' %} checked='check' {% endif %}/>
+                    <label for="raw">Raw</label><input type="radio" name="format" value="raw" id="raw" {% if post.format=='R' %} checked='check' {% endif %}/>
+                    <label for="rst">reStructuredText</label><input type="radio" name="format" value="rst" id="rst"{% if post.format=='S' %} checked='check' {% endif %}/>
+                    <label for="md">Markdown</label><input type="radio" name="format" value="md" value="md" id="md"{% if post.format=='M' %} checked='check' {% endif %}/>
                 </div>
                 <div class="post-meta-format">
                     <span>post Status:</span>
-                    <label for="publish">Publish</label><input type="radio" name="status" value="publish" id="publish" {% if c.status=='P' %} checked='check' {% endif %}/>
-                    <label for="draft">Draft</label><input type="radio" name="status" value="draft" id="draft"{% if c.status=='D' %} checked='check' {% endif %}/>
-                    <label for="hide">Hide</label><input type="radio" name="status" value="hide" id="hide"{% if c.status=='H' %} checked='check' {% endif %}/>
+                    <label for="publish">Publish</label><input type="radio" name="status" value="publish" id="publish" {% if post.status=='P' %} checked='check' {% endif %}/>
+                    <label for="draft">Draft</label><input type="radio" name="status" value="draft" id="draft"{% if post.status=='D' %} checked='check' {% endif %}/>
+                    <label for="hide">Hide</label><input type="radio" name="status" value="hide" id="hide"{% if post.status=='H' %} checked='check' {% endif %}/>
+                    <input type="hidden" name="id_post" value="{{ post.id_post }}" />
                 </div>
             </div>
             <div class="post-content">
-                <textarea style="width:100%;height:500px;" name="content"></textarea>
+                <textarea style="width:100%;height:500px;" name="content">{{post.content}}</textarea>
                     <button type="button">Preview</button>
                     <input type="submit" style="width:60px;" value="Save">
             </div>

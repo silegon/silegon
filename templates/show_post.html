@@ -15,6 +15,11 @@
                 <span class="post-meta-tag"><a href="{{url_for('tag_ref_post', tag_slug=tag.slug)}}" class="post-meta-tag-link">{{tag.name}}</a></span>
                 {% endfor %}
             </div>
+            {% if can_edit %}
+            <div>
+                <a href="{{ url_for('edit_post', post_slug=post.slug)}}">编辑文章</a>
+            </div>
+            {% endif %}
         </div>
         <div class="post-content">
             {{ post.content_html|safe }}

@@ -19,7 +19,7 @@
                 <ul class="post-list">
                     {% for post in c %}
                     <li class="post-list-item">
-                    <a href="{{post.slug}}" class="post-list-item-title">{{post.title}}</a><span class="post-list-item-date">{{post.publish_date}}</span>
+                    <a href="{{ url_for('show_post', post_slug=post.slug) }}" class="post-list-item-title">{{post.title}}</a><span class="post-list-item-date">{{post.publish_date}}</span>
                     </li>
                     {% endfor %}
                 </ul>
