@@ -28,10 +28,5 @@
 </div>
 {% endblock %}
 {% block tags %}
-            <div class="sidebar-box">
-                <div class="sidebar-box-title">标签</div>
-                {% for tag in all_tags %}
-                <a href='{{ url_for('tag_ref_post', tag_slug=tag.slug) }}' class='tag-link-27' title='{{tag.count}}个话题' style='font-size:{{tag.size}}pt;'>{{tag.name}}</a>
-                {% endfor %}
-            </div>
+{{super()}}
 {% endblock %}

@@ -24,6 +24,11 @@ a:hover {
 div {
     display:block;
 }
+ul {
+    margin:0;
+    border:0;
+    padding:0;
+}
 div.container {
     margin:0 auto;
     width:960px;
@@ -37,8 +42,13 @@ div.container {
 }
 #header-top-nav {
     position:absolute;
-    top:0;
+    top:-7px;
     right:0;
+}
+#header-top-nav a{
+}
+#header-top-nav a:hover{
+    color:#000;
 }
 #header-flash {
     position:absolute;
@@ -112,7 +122,12 @@ div.container {
 .sidebar-box ul {
     list-style:none;
 }
-
+.sidebar-box-tag-list-item {
+    display:inline;
+    margin-right:6px;
+    white-space:nowrap;
+    line-height:25px;
+}
 #search {
     position:relative;
     width:210px;

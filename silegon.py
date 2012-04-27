@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-#coding=utf-8
+#coding:utf-8
 import MySQLdb
+from MySQLdb import escape_string
 import math
+from time import localtime, strftime
 import datetime
 import markdown
 from docutils.core import publish_parts
@@ -9,16 +11,21 @@ from docutils.core import publish_parts
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, abort,\
         render_template, flash
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+import private_conf
+
 
 # configuration
-DATABASE_HOST = 'localhost'
-DATABASE_USERNAME= 'root' 
-DATABASE_PASSWORD = 'root'
-DATABASE_DB = 'silegon'
-DEBUG = True
-SECRET_KEY = 'DEVELOPMENT KEY'
-USERNAME = 'admin'
-PASSWORD = 'default'
+DATABASE_HOST = getattr(private_conf, "PRIVATE_DATABASE_HOST", 'localhost')
+DATABASE_USERNAME= getattr(private_conf, "PRIVATE_DATABASE_USERNAME", 'root') 
+DATABASE_PASSWORD = getattr(private_conf, "PRIVATE_DATABASE_PASSWORD", 'root')
+DATABASE_DB = getattr(private_conf, "PRIVATE_DATABASE_DB", 'silegon')
+DEBUG = getattr(private_conf, "PRIVATE_DEBUG", True)
+SECRET_KEY = getattr(private_conf, "PRIVATE_SECRET_KEY", 'DEVELOPMENT KEY')
+USERNAME = getattr(private_conf, "PRIVATE_USERNAME", 'admin')
+PASSWORD = getattr(private_conf, "PRIVATE_PASSWORD", 'default')
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -34,6 +41,9 @@ content_status_dict = {
     'draft':'D',
     'hide':'H',
 }
+
+def e(origin_string):
+    return escape_string(origin_string)
 
 def all_tags():
     g.db.execute("select id_tag, slug, name, count from tag;")
@@ -72,10 +82,12 @@ def get_post_tags(id_post):
 def connect_db():
     """Returns a new connection to the database."""
     return MySQLdb.connect(host=DATABASE_HOST, user=DATABASE_USERNAME,\
-                          passwd=DATABASE_PASSWORD, db=DATABASE_DB, charset='utf8')
+                          passwd=DATABASE_PASSWORD, db=DATABASE_DB, use_unicode=True,
+                           charset='utf8')
 
 def init_db():
     """Creates the database tables."""
+    print DATABASE_DB
     with closing(connect_db()) as db:
         with app.open_resource('schema.sql') as f:
             db.cursor().execute(f.read())
@@ -95,8 +107,8 @@ def teardown_request(exception):
 @app.route('/')
 def show_index():
     g.db.execute("select id_post, title, slug, publish_date, content_html \
-                 from post where content_status='P';")
-    context = [dict(id_post=row[0], title=row[1], slug=row[2],
+                 from post where content_status='P' order by id_post desc limit 1;")
+    context = [dict(id_post=row[0], title=row[1], slug=row[2] or 'id'+str(row[0]),
                     publish_date=row[3], content_html=row[4]) 
                for row in g.db.fetchall()]
     for post in context:
@@ -114,10 +126,12 @@ def show_post(post_slug):
                      post where slug='%s';"%(post_slug))
     post_row = g.db.fetchone()
     post = dict(id_post=post_row[0], title=post_row[1], publish_date=post_row[2],
-              content_html=post_row[3], slug=post_row[4] or 'id'+post_row[0])
+              content_html=post_row[3], slug=post_row[4] or 'id'+str(post_row[0]))
     post['tag'] = get_post_tags(post['id_post'])
     if session.get('logged_in'):
         can_edit = True
+    else:
+        can_edit = False
     return render_template('show_post.html', post=post, all_tags=all_tags(), 
                            can_edit=can_edit) 
 
@@ -148,7 +162,7 @@ def new_post():
             g.db.execute("insert into post (title, slug, content, content_html,\
                      content_format, content_status, publish_date) values \
                      ('%s','%s','%s','%s','%s','%s','%s')"%\
-                    (title, slug, content, content_html,\
+                    (title, slug, e(content), e(content_html),\
                      format, status, publish_date)) 
             g.db.execute("select last_insert_id();")
             id_post = g.db.fetchone()[0]
@@ -158,11 +172,13 @@ def new_post():
                 tags = _tag.split()
                 for tag_name in tags:
                     add_post_tag(tag_name, id_post)
+        return redirect(url_for('edit_post', post_slug='id'+str(id_post)))
     context = {
         'format':'R',
         'status':'P',
+        'slug'  :strftime("t%y%m%d%H%M%S", localtime())
     }
-    return render_template('post_form.html', post=context, error=error)
+    return render_template('post_form.html', post=context, error=error, all_tags=all_tags())
 
 @app.route('/tag/<tag_slug>')
 def tag_ref_post(tag_slug):
@@ -206,8 +222,8 @@ def edit_post(post_slug):
         if id_post and title and content_html: 
             g.db.execute("update post set title='%s', slug='%s', content='%s',\
                          content_html='%s', content_format='%s', content_status='%s' \
-                         where id_post='%s';"%(title, slug, content, content_html,\
-                        format, status, id_post))
+                         where id_post='%s';"%(title, slug, e(content),\
+                         e(content_html), format, status, id_post))
             new_tag = set(f.get('tag', None).split())
             origin_tag = set((map(lambda x:x['name'], get_post_tags(id_post))))
             add_tags = new_tag - origin_tag
@@ -220,16 +236,16 @@ def edit_post(post_slug):
     else:
         if post_slug.startswith('id'):
             id_post = post_slug[2:]
-            g.db.execute("select id_post, title, slug, content_format, content_status, \
+            g.db.execute("select id_post, title, slug, content_format, content_status,\
                          content from post where id_post=%s;"%(id_post))
         else:
-            g.db.execute("select id_post, title, slug, content_format, content_status, \
+            g.db.execute("select id_post, title, slug, content_format, content_status,\
                          content from post where slug='%s';"%(post_slug))
         post_row = g.db.fetchone()
         post = dict(id_post=post_row[0], title=post_row[1], slug=post_row[2],
                     format=post_row[3], status=post_row[4], content=post_row[5])
         post['tag'] = ' '.join(map(lambda x:x['name'], get_post_tags(post['id_post'])))
-        return render_template('post_form.html', post=post)
+        return render_template('post_form.html', post=post, all_tags=all_tags())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

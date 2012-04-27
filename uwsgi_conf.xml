@@ -1,0 +1,6 @@
+<uwsgi>
+    <uwsgi-socket>/tmp/uwsgi.sock</uwsgi-socket>
+    <module>silegon</module>
+    <callable>app</callable>
+    <daemonize>log/silegon_blog.log</daemonize>
+</uwsgi>
