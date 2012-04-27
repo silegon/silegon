@@ -18,14 +18,14 @@ import private_conf
 
 
 # configuration
-DATABASE_HOST = getattr(private_conf, "PRIVATE_DATABASE_HOST", 'localhost')
-DATABASE_USERNAME= getattr(private_conf, "PRIVATE_DATABASE_USERNAME", 'root') 
-DATABASE_PASSWORD = getattr(private_conf, "PRIVATE_DATABASE_PASSWORD", 'root')
+DATABASE_HOST = getattr(private_conf, "PRIVATE_DATABASE_HOST", '')
+DATABASE_USERNAME= getattr(private_conf, "PRIVATE_DATABASE_USERNAME", '') 
+DATABASE_PASSWORD = getattr(private_conf, "PRIVATE_DATABASE_PASSWORD", '')
 DATABASE_DB = getattr(private_conf, "PRIVATE_DATABASE_DB", 'silegon')
 DEBUG = getattr(private_conf, "PRIVATE_DEBUG", True)
-SECRET_KEY = getattr(private_conf, "PRIVATE_SECRET_KEY", 'DEVELOPMENT KEY')
-USERNAME = getattr(private_conf, "PRIVATE_USERNAME", 'admin')
-PASSWORD = getattr(private_conf, "PRIVATE_PASSWORD", 'default')
+SECRET_KEY = getattr(private_conf, "PRIVATE_SECRET_KEY", '')
+USERNAME = getattr(private_conf, "PRIVATE_USERNAME", '')
+PASSWORD = getattr(private_conf, "PRIVATE_PASSWORD", '')
 
 app = Flask(__name__)
 app.config.from_object(__name__)
