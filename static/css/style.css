@@ -13,18 +13,18 @@ body {
 }
 a{
     text-decoration:none;
-    color:#666;
+    color:#588F27;
 }
 p{
     margin:0 0 1em;
 }
 a:hover {
-    color:#588F27;
+    background-color:#CAFCD8;
 }
 div {
     display:block;
 }
-ul {
+.sidebar-box ul{
     margin:0;
     border:0;
     padding:0;
@@ -46,6 +46,7 @@ div.container {
     right:0;
 }
 #header-top-nav a{
+    color:#000
 }
 #header-top-nav a:hover{
     color:#000;
@@ -58,10 +59,11 @@ div.container {
     float:left;
     margin:0;
     padding-left:10px;
-    color:#588F27;
+    color:#A9CF54;
     font-size:300%;
     letter-spacing:2px;
     font-weight:bold;
+    background-color:white;
 }
 #header-navigation {
     float:right;
@@ -79,7 +81,6 @@ div.container {
     position:relative;
 }
 #header-menu-item a {
-    color:#5C5C5C;
     padding:0 15px;
     height:40px;
     line-height:40px;

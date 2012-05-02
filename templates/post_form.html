@@ -30,6 +30,9 @@
             <div class="post-content">
                 <textarea style="width:100%;height:500px;" name="content">{{post.content}}</textarea>
                     <input type="submit" value="Save">
+                    {% if post.slug %}
+                    <a href="{{ url_for('show_post',post_slug=post.slug) }}" target="_blank" />查看文章</a>
+                    {% endif %}
             </div>
         </form>
     </div>
