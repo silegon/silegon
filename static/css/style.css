@@ -129,6 +129,13 @@ div.container {
     white-space:nowrap;
     line-height:25px;
 }
+.sidebar-box-list-item a{
+    width:254px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+}
 #search {
     position:relative;
     width:210px;

@@ -245,7 +245,11 @@ def edit_post(post_slug):
         post = dict(id_post=post_row[0], title=post_row[1], slug=post_row[2],
                     format=post_row[3], status=post_row[4], content=post_row[5])
         post['tag'] = ' '.join(map(lambda x:x['name'], get_post_tags(post['id_post'])))
-        return render_template('post_form.html', post=post, all_tags=all_tags())
+        g.db.execute("select id_post, title, slug, publish_date from post where content_status='%s';"\
+                     %content_status_dict['draft'])
+        drafts = [dict(id_post=row[0], title=row[1], slug=row[2],
+                     publish_date=row[3]) for row in g.db.fetchall()]
+        return render_template('post_form.html', post=post, all_tags=all_tags(), drafts=drafts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

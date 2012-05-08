@@ -1,4 +1,7 @@
-*.pyc
 *~
-flushdb
-runserver
+*.swp
+*.pyc
+*.log
+fabfile.py
+private*
+*.sql
