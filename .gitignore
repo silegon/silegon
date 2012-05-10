@@ -5,3 +5,4 @@
 fabfile.py
 private*
 *.sql
+draft

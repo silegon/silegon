@@ -31,7 +31,7 @@
                 <textarea style="width:100%;height:500px;" name="content" id="textbox">{{post.content}}</textarea>
 
                     <input type="submit" value="Save">
-                    {% if post.slug %}
+                    {% if post.id_post %}
                     <a href="{{ url_for('show_post',post_slug=post.slug) }}" target="_blank" />查看文章</a>
                     {% endif %}
             </div>
@@ -40,6 +40,7 @@
 </div>
 {% endblock %}
 {% block tags %}
+{% if post.id_post %}
 <div class="sidebar-box">
     <div class="sidebar-box-title">草稿</div>
     <ul class="sidebar-box-list">
@@ -48,6 +49,7 @@
         {% endfor %}
     </ul>
 </div>
+{% endif %}
     {{super()}}
 {% endblock %}
 {% block script %}
